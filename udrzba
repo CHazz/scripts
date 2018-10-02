@@ -1,0 +1,8 @@
+#!/usr/bin
+
+sudo apt-get update -y && sudo apt-get upgrade -y && sudo apt-get dist-upgrade -y
+sudo deborphan | xargs sudo apt-get -y remove --purge and
+sudo apt-get autoremove -y && sudo apt-get autoclean -y && sudo apt-get purge -y && sudo apt-get clean -y
+sudo apt-get check ; sudo apt-get -f install -y
+sudo reboot
+

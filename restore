@@ -1,0 +1,41 @@
+#!/usr/bin
+
+echo ========================
+echo OBNOVA SYSTEMU ZE ZALOHY
+echo ========================
+echo
+
+while true; do
+    read -p "Opravdu chcete navrátit stav systému do předchozího stavu ? Všechna data od vytvoření zálohy budou ztracena ! Ano/NE  " an
+    case $an in
+        [Aa]* ) break;;
+        [Nn]* ) exit;;
+        * ) echo "Prosím odpovězte ANO NE.";;
+    esac
+done
+
+
+
+sudo rsync -aAXv --info=progress2 --stats --rsync-path="sudo rsync" --delete /home/systembackup/* --exclude={"/dev/*","/proc/*","/sys/*","/home/systembackup/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} / 2>/dev/null
+
+sudo update-grub
+
+
+echo ============================================================================
+echo obnova systému kompletní  následuje reboot za 5sekund můžete prerušit CTRL C
+echo ============================================================================
+
+
+sleep 1
+echo 4
+sleep 1
+echo 3
+sleep 1
+echo 2
+sleep 1
+echo 1
+sleep 1
+echo rebooot !
+
+sudo reboot
+

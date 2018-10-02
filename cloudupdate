@@ -1,0 +1,19 @@
+#! /usr/bin
+
+cd /tmp
+
+sudo wget https://download.nextcloud.com/server/daily/latest-stable13.zip
+sudo unzip latest-stable13.zip
+
+sudo rm /tmp/nextcloud/.htaccess
+sudo rm /tmp/nextcloud/.user.ini
+sudo rm /tmp/nextcloud/config/.htaccess
+
+sudo rsync -a /tmp/nextcloud/ /var/www/html
+
+sudo rm -rf /tmp/nextcloud/*
+sudo rm /tmp/latest-stable13.zip
+
+sudo chmod -R 777 /var/www/
+sudo chown -R www-data:www-data /var/www/
+sudo -u www-data php /var/www/html/occ files:scan --all

@@ -1,0 +1,6 @@
+#! /usr/bin
+
+
+	sleep 30
+	sudo service opendkim restart
+

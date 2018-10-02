@@ -1,0 +1,32 @@
+#! /bin/sh
+
+cd /var/searx
+rm /var/searx/searx/settings.yml 
+git reset --hard origin/master
+git clean -f -d
+git pull
+
+sed -i 's/name : "searx"/name : "TuxLinux"/g' /var/searx/searx/settings.yml
+sed -i 's/port : 8888/port : 80/g' /var/searx/searx/settings.yml
+sed -i 's/language : "en-US"/language : "cs-CZ"/g' /var/searx/searx/settings.yml
+sed -i 's/bind_address : "127.0.0.1"/bind_address : "xxx.xxx.xxx.xxx"/g' /var/searx/searx/settings.yml
+sed -i 's/secret_key : "ultrasecretkey"/secret_key : "xxxxxxxxxx"/g' /var/searx/searx/settings.yml
+
+sudo rsync -a /data/searx/ /
+
+
+sed -i 's/searx - a privacy-respecting, hackable metasearch engine/Tuxlinux - neveřejná stránka/g' /var/searx/searx/templates/simple/base.html
+sed -i 's/searx - a privacy-respecting, hackable metasearch engine/Tuxlinux - neveřejná stránka/g' /var/searx/searx/templates/oscar/base.html
+sed -i 's/searx - a privacy-respecting, hackable metasearch engine/Tuxlinux - neveřejná stránka/g' /var/searx/searx/templates/courgette/base.html 
+sed -i 's/searx - a privacy-respecting, hackable metasearch engine/Tuxlinux - neveřejná stránka/g' /var/searx/searx/templates/pix-art/base.html
+sed -i 's/searx - a privacy-respecting, hackable metasearch engine/Tuxlinux - neveřejná stránka/g' /var/searx/searx/templates/legacy/base.html
+
+sed -i 's/searx, search, search engine, metasearch, meta search/tuxlinux/g' /var/searx/searx/templates/simple/base.html
+sed -i 's/searx, search, search engine, metasearch, meta search/tuxlinux/g' /var/searx/searx/templates/oscar/base.html
+sed -i 's/searx, search, search engine, metasearch, meta search/tuxlinux/g' /var/searx/searx/templates/courgette/base.html
+sed -i 's/searx, search, search engine, metasearch, meta search/tuxlinux/g' /var/searx/searx/templates/pix-art/base.html
+sed -i 's/searx, search, search engine, metasearch, meta search/tuxlinux/g' /var/searx/searx/templates/legacy/base.html
+
+
+service uwsgi reload
+

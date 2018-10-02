@@ -1,0 +1,6 @@
+#!/usr/bin
+
+sudo sleep 30 
+	ufw disable
+	echo "y" | sudo ufw enable
+	service opendkim start

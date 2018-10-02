@@ -1,0 +1,6 @@
+#!/bin/sh
+
+sudo chmod -R 777 /var/www/
+sudo chown -R www-data:www-data /var/www/
+sudo -u www-data php /var/www/html/occ files:scan --all -q --no-warnings --no-interaction 
+# sudo sync; echo 1 > /proc/sys/vm/drop_caches

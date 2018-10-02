@@ -1,0 +1,14 @@
+#! /usr/bin
+
+echo ====================================================== 
+echo zálohování systému - můžete kdykoliv přerušit - CTRL C 
+echo ======================================================
+
+sudo mkdir -p /home/systembackup
+sudo rsync -aAXv --info=progress2 --stats --rsync-path="sudo rsync" --delete / --exclude={"/dev/*","/proc/*","/sys/*","/home/systembackup/*","/tmp/*","/run/*","/mnt/*","/media/*","/lost+found"} /home/systembackup 2>/dev/null
+
+
+
+echo ========================
+echo Záloha systému kompletní
+echo ========================

@@ -1,0 +1,113 @@
+#! /usr/bin
+
+cd /home/martin/blacklist
+git pull
+
+cd /etc/powerdns/blockengine/hosts-blocklists
+git pull
+
+cp domains.txt blocklist.txt
+
+#odstraneni radek obsahujici # a 0.0.0.0
+grep -vwE "(#|0.0.0.0)" blocklist.txt >  blocklist2.txt
+
+rm blocklist.txt
+
+sed -e 's/[/'\'']/ /g;s/  */ /g'  blocklist2.txt > blocklist1.lua
+
+rm blocklist2.txt
+
+#nahrazeni adress= za "
+sed -i 's/address= /"/g' blocklist1.lua
+
+#nahrazeni :: za ",
+sed -i 's/ ::/",/g' blocklist1.lua
+
+#pridani na zacatek soubouru return{
+sed -i -e '1ireturn{\' blocklist1.lua
+
+
+cp hostnames.txt blocklista.txt
+grep -vwE "(#|::)" blocklista.txt >  blocklista2.txt
+rm blocklista.txt
+sed -i 's/0.0.0.0 /"/g' blocklista2.txt
+sed 's/$/",/' blocklista2.txt >  blocklista3.txt
+rm blocklista2.txt
+
+# custom blacklist
+
+cp /home/martin/blacklist/custom.txt /etc/powerdns/blockengine/hosts-blocklists
+
+#prevence prazdnych radek odstraneni mezer a pak radku bez niceho
+
+sed -r 's/\s+//g' custom.txt > customA.txt
+sed '/^$/d' customA.txt > customB.txt
+
+rm custom.txt
+rm customA.txt
+
+# pridani na zacatek customB.txt "
+sed 's/^/"/'  customB.txt > custom1.txt
+rm customB.txt
+
+# pridani na konec ",
+sed 's/$/",/' custom1.txt > custom2.txt
+rm custom1.txt
+
+cat  blocklist1.lua  blocklista3.txt  custom2.txt >  blocklistz.lua
+
+rm custom2.txt
+rm blocklista3.txt
+rm blocklist1.lua
+
+#custom whitelist
+
+cp /home/martin/blacklist/whitelist.txt /etc/powerdns/blockengine/hosts-blocklists
+
+#prevence prazdnych radek odstraneni mezer a pak radku bez niceho
+
+sed -r 's/\s+//g' whitelist.txt > whitelistA.txt
+sed '/^$/d' whitelistA.txt > whitelistB.txt
+
+rm whitelist.txt
+rm whitelistA.txt
+
+
+# pridani na zacatek whitelist.txt "
+sed 's/^/"/'  whitelistB.txt > whitelist1.txt
+rm whitelistB.txt
+
+#pridani na konec ",
+sed 's/$/",/' whitelist1.txt > whitelist2.txt
+rm whitelist1.txt
+
+# aplikace whitelist
+grep -Fvxf whitelist2.txt  blocklistz.lua >  blocklistz1.lua
+
+rm whitelist2.txt
+
+#smazani duplicit myslim ...
+awk '!x[$0]++' blocklistz1.lua > blocklist.lua
+rm blocklistz1.lua
+
+echo "}" >> blocklist.lua
+
+rm /etc/powerdns/blocklist.lua
+
+mv /etc/powerdns/blockengine/hosts-blocklists/blocklist.lua /etc/powerdns/blocklist.lua
+
+
+rm /home/martin/blacklist/blocklist.lua
+cp /etc/powerdns/blocklist.lua /home/martin/blacklist/
+
+cd /home/martin/blacklist
+
+git add .
+git commit -m "Auto Update : `date`"
+     #git commit --amend --no-edit --allow-empty
+     #git push --force
+git push 
+
+# reload blocklist local
+rec_control reload-lua-script
+
