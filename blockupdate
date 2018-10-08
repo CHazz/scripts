@@ -1,5 +1,3 @@
-#! /usr/bin
-
 cd /home/martin/blacklist
 git pull
 
