@@ -1,5 +1,9 @@
 #!/usr/bin
 
+cd /
+
+clear
+
 echo ========================
 echo OBNOVA SYSTEMU ZE ZALOHY
 echo ========================
