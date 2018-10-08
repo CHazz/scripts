@@ -1,4 +1,5 @@
-#! /usr/bin
+cd /
+clear
 
 echo ====================================================== 
 echo zálohování systému - můžete kdykoliv přerušit - CTRL C 
