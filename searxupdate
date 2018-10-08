@@ -1,5 +1,3 @@
-#! /bin/sh
-
 cd /var/searx
 rm /var/searx/searx/settings.yml 
 git reset --hard origin/master
