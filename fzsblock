@@ -17,7 +17,7 @@ echo stahovĂˇnĂ­ aktualizacĂ­
 
 	rm adult.tar.gz 2> /dev/null
 	sudo rm -rf adult 2> /dev/null
-	wget ftp://ftp.ut-capitole.fr/pub/reseau/cache/squidguard_contrib/adult.tar.gz  -q --show-progress
+	wget http://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz -q --show-progress
 
 
                 file="adult.tar.gz"
@@ -29,7 +29,7 @@ echo stahovĂˇnĂ­ aktualizacĂ­
                                 cp  /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/
 				status="CHYBA"
 				echo "chyba zdroje UT1 https://dsi.ut-capitole.fr/blacklists/index_en.php" >> status.txt
-				echo "pouĹľita zĂˇloha 1 (upravte URL) mohlo nastat moc ÄŤastou aktualizacĂ­ " >> status.txt
+				echo "pouĹľita zĂˇloha 1 (upravte URL)" >> status.txt
                         fi
 
 		cmp --silent /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/adult.tar.gz || echo "zdroj 1 (adult blacklist) aktualizovĂˇn" >> status.txt
