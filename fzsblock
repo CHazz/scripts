@@ -1,0 +1,511 @@
+#updater dns blacklistu
+
+cd /home/dnsblocker
+status="OK"
+rm status.txt
+touch status.txt
+
+clear
+
+echo =====================================
+echo DNS Blacklist generator V0.7.1 stable
+echo =====================================
+
+echo stahovĂˇnĂ­ aktualizacĂ­
+
+# blacklist UT1 zdroj 1
+
+	rm adult.tar.gz 2> /dev/null
+	sudo rm -rf adult 2> /dev/null
+	wget ftp://ftp.ut-capitole.fr/pub/reseau/cache/squidguard_contrib/adult.tar.gz  -q --show-progress
+
+
+                file="adult.tar.gz"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+                                echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+                                cp  /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/
+				status="CHYBA"
+				echo "chyba zdroje UT1 https://dsi.ut-capitole.fr/blacklists/index_en.php" >> status.txt
+				echo "pouĹľita zĂˇloha 1 (upravte URL) mohlo nastat moc ÄŤastou aktualizacĂ­ " >> status.txt
+                        fi
+
+		cmp --silent /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/adult.tar.gz || echo "zdroj 1 (adult blacklist) aktualizovĂˇn" >> status.txt
+		tar -xvzf adult.tar.gz > /dev/null
+		cp /home/dnsblocker/adult/domains /home/dnsblocker/
+		sudo rm -rf adult 2> /dev/null
+		mv domains UT1	
+
+		rm  /home/dnsblocker/cache/adult.tar.gz 2> /dev/null
+		cp  /home/dnsblocker/adult.tar.gz  /home/dnsblocker/cache/
+
+
+# black list na black list :) zdroj 2
+
+        rm hosts 2> /dev/null
+        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -q --show-progress
+
+                file="hosts"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+                                echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+                                cp  /home/dnsblocker/cache/bblock /home/dnsblocker/
+				mv bblock hosts
+                                status="CHYBA" 
+				echo "chyba zdroje StevenBlack https://github.com/StevenBlack/hosts" >> status.txt
+				echo "pouĹľita zĂˇloha 2 (upravte URL)" >> status.txt
+                        fi
+
+			mv hosts bblock
+                        cmp --silent /home/dnsblocker/cache/bblock /home/dnsblocker/bblock || echo "zdroj 2 (malware blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/bblock 2> /dev/null
+                cp  /home/dnsblocker/bblock  /home/dnsblocker/cache/
+
+
+# porn a adds .. musi byt opraven zdroj 3
+
+        rm hosts 2> /dev/null
+        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts -q --show-progress
+
+                file="hosts"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+                               echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+                               cp  /home/dnsblocker/cache/bbad /home/dnsblocker/
+                               mv bbad hosts
+                               status="CHYBA"
+			       echo "chyba zdroje StevenBlack https://github.com/StevenBlack/hosts/tree/master/alternates/porn" >> status.txt
+			       echo "pouĹľita zĂˇloha 3 (upravte URL)" >> status.txt
+                        fi
+
+		        mv hosts bbad
+			cmp --silent /home/dnsblocker/cache/bbad /home/dnsblocker/bbad || echo "zdroj 3 (porn blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/bbad 2> /dev/null
+                cp  /home/dnsblocker/bbad  /home/dnsblocker/cache/
+
+
+# ads zdroj 4
+	rm ad_servers.txt 2> /dev/null
+	wget https://hosts-file.net/ad_servers.txt -q --show-progress
+
+		file="ad_servers.txt"
+		if [ -f "$file" ]
+			then
+				echo ""
+			else
+                               echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+                               cp  /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/
+                               status="CHYBA"
+			       echo "chyba zdroje AD (reverse) https://hosts-file.net/ad_servers.txt" >> status.txt
+			       echo "pouĹľita zĂˇloha 4 (upravte URL)" >> status.txt
+			fi
+
+				cmp --silent /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt || echo "zdroj 4 (ads reverse blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/ad_servers.txt 2> /dev/null
+                cp  /home/dnsblocker/ad_servers.txt  /home/dnsblocker/cache/
+
+
+
+# porn hosts zdroj 5
+	rm hosts 2> /dev/null
+	wget https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts -q --show-progress
+
+                file="hosts"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+				echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+				cp  /home/dnsblocker/cache/hosts2 /home/dnsblocker/
+				mv hosts2 hosts
+                                status="CHYBA"
+				echo "chyba zdroje EnergizedProtection porn https://github.com/EnergizedProtection/block" >> status.txt
+			        echo "pouĹľita zĂˇloha 5 (upravte URL)" >> status.txt
+                        fi
+
+			mv hosts hosts2
+
+				cmp --silent /home/dnsblocker/cache/hosts2 /home/dnsblocker/hosts2 || echo "zdroj 5 (Energized porn blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/hosts2 2> /dev/null
+                cp  /home/dnsblocker/hosts2  /home/dnsblocker/cache/
+
+
+# a jeste jeden ciste porn zdroj 6
+	rm hosts 2> /dev/null
+
+
+
+	wget https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts -q --show-progress
+
+                file="hosts"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+				echo "problem pĹ™i staĹľenĂ­ $file beru ze zĂˇlohy !!"
+                                cp  /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/
+                                mv ext-porn-hosts hosts
+                                status="CHYBA"
+				echo "chyba zdroje EnergizedProtection porn extension https://github.com/EnergizedProtection/block" >> status.txt
+				echo "pouĹľita zĂˇloha 6 (upravte URL)" >> status.txt
+                        fi
+
+			mv hosts ext-porn-hosts
+				cmp --silent /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/ext-porn-hosts || echo "zdroj 6 (Energized porn extra blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/ext-porn-hosts 2> /dev/null
+                cp  /home/dnsblocker/ext-porn-hosts  /home/dnsblocker/cache/
+
+
+# malware zdroj 7
+	rm simple_malware.txt 2> /dev/null
+	wget https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt -q --show-progress
+
+                file="simple_malware.txt"
+                if [ -f "$file" ]
+                        then
+                                echo ""
+                        else
+                               echo "problem pĹ™i staĹľenĂ­ $file Beru ze zĂˇlohy !!"
+                               cp  /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/
+                               status="CHYBA"
+			       echo "chyba zdroje simple malware https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt" >> status.txt
+			       echo "pouĹľita zĂˇloha 7 (upravte URL)" >> status.txt
+                        fi
+
+			       cmp --silent /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt || echo "zdroj 7 (malware blacklist) aktualizovĂˇn" >> status.txt
+
+                rm  /home/dnsblocker/cache/simple_malware.txt 2> /dev/null
+                cp  /home/dnsblocker/simple_malware.txt  /home/dnsblocker/cache/
+
+
+echo ===================
+echo konverze blacklistu 
+echo ===================
+
+echo whitelistovani chybneho blacklistu
+
+	grep -Fvxf bblock bbad > fresh
+
+echo pĹ™Ă­prava blacklistu 
+
+	sed -i 's/0.0.0.0//g' fresh
+	sed -i '/#/d' fresh
+
+echo odstranÄ›nĂ­ komentĂˇĹ™ĹŻ simple malware
+
+	sed -i '/#/d' simple_malware.txt
+	sed -i '/Malware list by Disconnect/d' simple_malware.txt
+        sed -i '/^$/d' simple_malware.txt
+        sed -i -r 's/\s+//g' simple_malware.txt
+	echo " " >> simple_malware.txt
+
+echo oprava protekce [Ě˛Ě…pĚ˛Ě…][Ě˛Ě…oĚ˛Ě…][Ě˛Ě…rĚ˛Ě…][Ě˛Ě…nĚ˛Ě…][Ě˛Ě…aĚ˛Ě…][Ě˛Ě…wĚ˛Ě…][Ě˛Ě…aĚ˛Ě…][Ě˛Ě…yĚ˛Ě…] 1/2
+
+	awk '!/]/' ext-porn-hosts > temp && mv temp bingo
+	rm ext-porn-hosts 2> /dev/null
+	mv bingo ext-porn-hosts
+
+echo odstranÄ›nĂ­ komentĹŻ porn hosts2
+        sed -i '/#/d' hosts2
+echo  odstranÄ›nĂ­ chybnĂ˝ch zĂˇznamĹŻ porn hosts2
+        sed -i '/127.0.0.1 localhost/d' hosts2
+echo -en 7.1% "\r$i"
+        sed -i '/127.0.0.1 localhost.localdomain/d' hosts2
+echo -en 14.2% "\r$i"
+        sed -i '/127.0.0.1 local/d' hosts2
+echo -en 21.4% "\r$i"
+        sed -i '/255.255.255.255 broadcasthost/d' hosts2
+echo -en 28.5% "\r$i"
+        sed -i '/::1 localhost/d' hosts2
+echo -en 35.7% "\r$i"
+        sed -i '/::1 ip6-localhost/d' hosts2
+echo -en 42.8% "\r$i"
+        sed -i '/::1 ip6-loopback/d' hosts2
+echo -en 50.0% "\r$i"
+        sed -i '/fe80::1%lo0 localhost/d' hosts2
+echo -en 57.1% "\r$i"
+        sed -i '/ff00::0 ip6-localnet/d' hosts2
+echo -en 64.2% "\r$i"
+        sed -i '/ff00::0 ip6-mcastprefix/d' hosts2
+echo -en 71.4% "\r$i"
+        sed -i '/ff02::1 ip6-allnodes/d' hosts2
+echo -en 78.5% "\r$i"
+        sed -i '/ff02::2 ip6-allrouters/d' hosts2
+echo -en 85.7% "\r$i"
+        sed -i '/ff02::3 ip6-allhosts/d' hosts2
+echo -en 92.8% "\r$i"
+        sed -i '/0.0.0.0 0.0.0.0/d' hosts2
+echo 100%.
+
+
+echo odstanÄ›nĂ­ prĂˇzdnĂ˝ch zĂˇznamĹŻ porn host2s
+
+        sed -i '/^$/d' hosts2
+        sed -i -r 's/\s+//g' hosts2
+
+echo Ăşprava zĂˇznamĹŻ porn hosts2
+
+        sed -i 's/0.0.0.0//g' hosts2
+
+
+echo oprava protekce 2/2
+
+
+ awk '!/]/' hosts2 > temp && mv temp bingo
+        rm hosts2 2> /dev/null
+        mv bingo hosts
+
+echo odstranÄ›nĂ­ komentĹŻ ext-porn
+        sed -i '/#/d' ext-porn-hosts
+echo  odstranÄ›nĂ­ chybnĂ˝ch zĂˇznamĹŻ ext-porn
+        sed -i '/127.0.0.1 localhost/d' ext-porn-hosts
+echo -en 7.1% "\r$i"
+        sed -i '/127.0.0.1 localhost.localdomain/d' ext-porn-hosts
+echo -en 14.2% "\r$i"
+        sed -i '/127.0.0.1 local/d' ext-porn-hosts
+echo -en 21.4% "\r$i"
+        sed -i '/255.255.255.255 broadcasthost/d' ext-porn-hosts
+echo -en 28.5% "\r$i"
+        sed -i '/::1 localhost/d' ext-porn-hosts
+echo -en 35.7% "\r$i"
+        sed -i '/::1 ip6-localhost/d' ext-porn-hosts
+echo -en 42.8% "\r$i"
+        sed -i '/::1 ip6-loopback/d' ext-porn-hosts
+echo -en 50.0% "\r$i"
+        sed -i '/fe80::1%lo0 localhost/d' ext-porn-hosts
+echo -en 57.1% "\r$i"
+        sed -i '/ff00::0 ip6-localnet/d' ext-porn-hosts
+echo -en 64.2% "\r$i"
+        sed -i '/ff00::0 ip6-mcastprefix/d' ext-porn-hosts
+echo -en 71.4% "\r$i"
+        sed -i '/ff02::1 ip6-allnodes/d' ext-porn-hosts
+echo -en 78.5% "\r$i"
+        sed -i '/ff02::2 ip6-allrouters/d' ext-porn-hosts
+echo -en 85.7% "\r$i"
+        sed -i '/ff02::3 ip6-allhosts/d' ext-porn-hosts
+echo -en 92.8% "\r$i"
+        sed -i '/0.0.0.0 0.0.0.0/d' ext-porn-hosts
+echo 100%.
+
+
+echo odstanÄ›nĂ­ prĂˇzdnĂ˝ch zĂˇznamĹŻ ext-porn
+
+        sed -i '/^$/d' ext-porn-hosts
+        sed -i -r 's/\s+//g' ext-porn-hosts
+
+echo Ăşprava zĂˇznamĹŻ ext-porn
+
+        sed -i 's/0.0.0.0//g' ext-porn-hosts
+
+
+echo PropojenĂ­ blacklistĹŻ 
+
+        sed -i -r 's/\s+//g' perBlacklist
+        sed -i '/^$/d' perBlacklist
+
+	rm domainsC 2> /dev/null
+	cat ext-porn-hosts hosts simple_malware.txt fresh UT1 > domainsC
+
+
+echo odstraneni blogspot zaznamu 
+
+	sed -i 'N; /blogspot/d' domainsC
+
+echo odstraneni tumblr.com
+
+	sed -i 'N; /tumblr.com/d' domainsC
+
+cat domainsC perBlacklist > domains
+
+echo odstranÄ›nĂ­ nepouĹľitelnĂ˝ch IP
+
+	grep -P -v '^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$' domains > domains.list
+
+echo odstranÄ›nĂ­ komentĹŻ ADS
+
+        sed -i '/#/d' ad_servers.txt
+	sed -i '/127.0.0.1 localhost #IPv4 localhost/d' ad_servers.txt
+	sed -i '/::1 localhost #IPv6 localhost/d' ad_servers.txt
+
+echo Ăşprava zĂˇznamĹŻ ADS
+
+        sed -i 's/127.0.0.1//g' ad_servers.txt
+        sed -i '/^$/d' ad_servers.txt
+        sed -i -r 's/\s+//g' ad_servers.txt
+
+echo pĹ™Ă­prava porovĂˇvacĂ­ho souboru ADS
+
+        sed -i '/^$/d' ad_servers.txt
+        sed -i -r 's/\s+//g' ad_servers.txt
+
+        sed -i 's/^/"/' ad_servers.txt
+        sed -i 's/$/",/' ad_servers.txt
+        sed -i '/^$/d' ad_servers.txt
+
+echo Ăşprava zĂˇznamĹŻ pro primarni BL 1/2
+
+        sed -i 's/$/",/' domains.list
+
+echo Ăşprava zĂˇznamĹŻ pro primarni BL 2/2
+
+        sed -i 's/^/"/' domains.list
+
+echo aktualizace black/white listu z github
+
+	cd github
+	git pull
+	cd ..
+
+echo generovĂˇnĂ­ vĂ˝stupu blacklistu
+
+	rm blacklist 2> /dev/null
+	cp /home/dnsblocker/github/blacklist /home/dnsblocker/
+
+	sed -i '/^$/d' blacklist
+        sed -i -r 's/\s+//g' blacklist
+
+	sed -i 's/^/"/' blacklist
+	sed -i 's/$/",/' blacklist
+	sed -i '/^$/d' blacklist
+
+echo pĹ™ipojenĂ­ blacklistu z github
+	
+	rm blacklisted 2> /dev/null
+	cat domains.list blacklist > blacklisted
+	dos2unix blacklisted
+
+echo generovĂˇnĂ­ vĂ˝stupu whitelistu z github
+
+	rm whitelist 2> /dev/null
+        cp /home/dnsblocker/github/whitelist /home/dnsblocker/
+
+	cat perWhitelist whitelist > whitelistB
+	rm whitelist 2> /dev/null
+	mv whitelistB whitelist
+
+
+	#subdomeny
+	rm whitelistD 2> /dev/null
+        sed 's/^/./' whitelist > whitelistD
+
+	sed -i '/^$/d' whitelist
+	sed -i -r 's/\s+//g' whitelist
+
+	sed -i 's/^/"/' whitelist
+	sed -i 's/$/",/' whitelist
+	sed -i '/^$/d' whitelist
+
+echo pĹ™ipojenĂ­ whitelistu
+
+	dos2unix blacklisted -q
+	dos2unix whitelistD -q
+	dos2unix whitelist -q
+
+	rm blocklistA 2> /dev/null
+
+	grep -vFf whitelistD blacklisted > blacklistD
+	grep -Fvxf whitelist blacklistD > blocklistA
+
+echo reversni aplikace ADS
+
+	rm blocklist 2> /dev/null
+        grep -Fvxf ad_servers.txt blocklistA > blocklist
+
+echo odstanÄ›nĂ­ prĂˇzdnĂ˝ch zĂˇznamĹŻ 
+
+        sed -i '/^$/d' blocklist
+	sed -i -r 's/\s+//g' blocklist
+
+echo oprava nepouĹľitelnĂ˝ch zĂˇznamĹŻ
+
+	sed -i 's|/"|"|g' blocklist
+
+echo kontrola duplicitnĂ­ch zĂˇznamĹŻ
+
+        awk '!x[$0]++' blocklist > blocklist.lua
+
+echo seĹ™azenĂ­ podle abecedy
+
+	sort blocklist.lua -o blocklist.lua
+
+echo pĹ™idĂˇnĂ­ tagĹŻ
+
+        sed -i '1i return{' blocklist.lua
+	echo "}" >> blocklist.lua
+
+echo ÄŤiĹˇtÄ›nĂ­ a oprava kompatiblity
+
+	rm adult.tar.gz 2> /dev/null
+	rm UT1 2> /dev/null
+        rm ad_servers.txt 2> /dev/null
+        rm blacklist 2> /dev/null
+        rm blacklistD 2> /dev/null
+        rm blacklisted 2> /dev/null
+        rm blocklist 2> /dev/null
+        rm blocklistA 2> /dev/null
+        rm domains.list 2> /dev/null
+        rm ext-porn-hosts 2> /dev/null
+        rm domains 2> /dev/null
+	rm domainsC 2> /dev/null
+        rm hosts 2> /dev/null
+	rm bbad 2> /dev/null
+	rm bblock 2> /dev/null
+	rm fresh 2> /dev/null
+        rm simple_malware.txt 2> /dev/null
+	rm whitelist 2> /dev/null
+	rm whitelistD 2> /dev/null
+	dos2unix blocklist.lua
+
+echo pĹ™Ă­prava pro zveĹ™ejnÄ›nĂ­ na github
+	 
+	rm /var/www/html/blocklist.lua 2> /dev/null
+	cp /home/dnsblocker/blocklist.lua /var/www/html
+
+	pocet=$(sed -n '$=' blocklist.lua)
+	size=$(wc -c < "blocklist.lua")
+	echo "PoÄŤet zĂˇznamĹŻ :" $pocet >> status.txt
+	echo "Velikost blacklistu :" $size"b" >> status.txt
+	mv -f /home/dnsblocker/status.txt /home/dnsblocker/github
+
+echo zveĹ™ejnÄ›nĂ­ zmÄ›n na github
+
+	cd  github
+
+	git add .
+	git commit -m "Auto Update : `date` '$status'" -m "poÄŤet zĂˇznamĹŻ : '$pocet' velikost : '$size'"
+     #git commit --amend --no-edit --allow-empty
+     #git push --force
+	git push
+
+echo aplikace blocklistu na DNS server
+
+	cd ..
+
+	rm /etc/powerdns/blocklist.lua 2> /dev/null
+	mv /home/dnsblocker/blocklist.lua /etc/powerdns
+#	/etc/init.d/pdns-recursor stop
+        echo 3 > /proc/sys/vm/drop_caches
+#	/etc/init.d/pdns-recursor start
+
+	rec_control --timeout=90 reload-lua-script
+
+
+cd /
+
+# dns2 sync
+
+ sshpass -p updater4321 ssh -o StrictHostKeyChecking=no updater@192.168.1.3 "sudo updater2"
+
+
+echo Hotovo
