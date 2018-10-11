@@ -223,7 +223,7 @@ echo odstranění komentářů simple malware
         sed -i -r 's/\s+//g' simple_malware.txt
         echo " " >> simple_malware.txt
 
-echo oprava protekce [̲̅p̲̅][̲̅o̲̅][̲̅r̲̅][̲̅n̲̅][̲̅a̲̅][̲̅w̲̅][̲̅a̲̅][̲̅y̲̅] 1/2
+echo odstranění ochrany [̲̅p̲̅][̲̅o̲̅][̲̅r̲̅][̲̅n̲̅][̲̅a̲̅][̲̅w̲̅][̲̅a̲̅][̲̅y̲̅] 1/2
 
         awk '!/]/' ext-porn-hosts > temp && mv temp bingo
         rm ext-porn-hosts 2> /dev/null
@@ -272,7 +272,7 @@ echo úprava záznamů porn hosts2
         sed -i 's/0.0.0.0//g' hosts2
 
 
-echo oprava protekce 2/2
+echo odstranění ochrany 2/2
 
 
  awk '!/]/' hosts2 > temp && mv temp bingo
