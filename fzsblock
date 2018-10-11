@@ -439,6 +439,10 @@ echo seĹ™azenĂ­ podle abecedy
 
 	sort blocklist.lua -o blocklist.lua
 
+echo kontrola domén
+
+        sed -i '/\./!d' blocklist.lua
+
 echo pĹ™idĂˇnĂ­ tagĹŻ
 
         sed -i '1i return{' blocklist.lua
