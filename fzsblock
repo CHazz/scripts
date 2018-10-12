@@ -1,6 +1,32 @@
-#updater dns blacklistu
+#updater dns blacklistu FZŠ
 
 cd /home/dnsblocker
+loging=""
+TYPE="FORCE"
+
+#root check
+	MYUID=$(id -u)
+	if [ x$MYUID != x0 ] 
+	then
+	    printf -v cmd_str '%q ' "$0" "$@"
+	    exec sudo su -c "$cmd_str"
+	fi
+
+#parametry spušnění
+
+	if [ "$1" = "-d" ]
+        then
+            TYPE="DAILY"
+        fi
+
+
+        if [ "$1" = "-g" ]
+        then
+            TYPE="GIT"
+        fi
+
+
+
 status="OK"
 rm status.txt
 touch status.txt
@@ -8,16 +34,15 @@ touch status.txt
 clear
 
 echo =====================================
-echo DNS Blacklist generator V0.7.4 stable
+echo DNS Blacklist generator V0.7.5 stable
 echo =====================================
-
+echo updater spuštěn v režimu $TYPE 
 echo stahování aktualizací
-
 # blacklist UT1 zdroj 1
 
-        rm adult.tar.gz 2> /dev/null
-        sudo rm -rf adult 2> /dev/null
-        wget http://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz -q --show-progress
+	rm adult.tar.gz 2> /dev/null
+	rm -rf adult 2> /dev/null
+	wget http://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz -q --show-progress
 
                 file="adult.tar.gz"
                 if [ -f "$file" ]
@@ -26,24 +51,24 @@ echo stahování aktualizací
                         else
                                 echo "Problém při stažení $file Beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/
-                                status="CHYBA"
-                                echo "Chyba zdroje UT1 https://dsi.ut-capitole.fr/blacklists/index_en.php" >> status.txt
-                                echo "Použita záloha 1 (upravte URL)" >> status.txt
+				status="CHYBA"
+				echo "Chyba zdroje UT1 https://dsi.ut-capitole.fr/blacklists/index_en.php" >> status.txt
+				echo "Použita záloha 1 (upravte URL)" >> status.txt
                         fi
 
-                tar -xvzf adult.tar.gz > /dev/null
-                cp /home/dnsblocker/adult/domains /home/dnsblocker/
-                sudo rm -rf adult 2> /dev/null
-                mv domains UT1
+		tar -xvzf adult.tar.gz > /dev/null
+		cp /home/dnsblocker/adult/domains /home/dnsblocker/
+		rm -rf adult 2> /dev/null
+		mv domains UT1	
 
-                var=$(comm -3 /home/dnsblocker/cache/UT1 /home/dnsblocker/UT1 2> /dev/null | wc -l)
-                cmp --silent /home/dnsblocker/cache/UT1 /home/dnsblocker/UT1 || echo "Zdroj 1 (UT adult blacklist) aktualizován. ($var změn)" >> status.txt
+		var=$(comm -3 /home/dnsblocker/cache/UT1 /home/dnsblocker/UT1 2> /dev/null | wc -l)
+		cmp --silent /home/dnsblocker/cache/UT1 /home/dnsblocker/UT1 || echo "Zdroj 1 (UT adult blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/UT1 2> /dev/null
                 cp  /home/dnsblocker/UT1 /home/dnsblocker/cache/
 
-                rm  /home/dnsblocker/cache/adult.tar.gz 2> /dev/null
-                cp  /home/dnsblocker/adult.tar.gz  /home/dnsblocker/cache/
+		rm  /home/dnsblocker/cache/adult.tar.gz 2> /dev/null
+		cp  /home/dnsblocker/adult.tar.gz  /home/dnsblocker/cache/
 
 
 # black list na black list :) zdroj 2
@@ -58,15 +83,15 @@ echo stahování aktualizací
                         else
                                 echo "Problém při stažení $file Beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/bblock /home/dnsblocker/
-                                mv bblock hosts
-                                status="CHYBA"
-                                echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts" >> status.txt
-                                echo "Použita záloha 2 (upravte URL)" >> status.txt
+				mv bblock hosts
+                                status="CHYBA" 
+				echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts" >> status.txt
+				echo "Použita záloha 2 (upravte URL)" >> status.txt
                         fi
 
-                        mv hosts bblock
+			mv hosts bblock
 
-                        var=$(comm -3 /home/dnsblocker/cache/bblock /home/dnsblocker/bblock 2> /dev/null | wc -l)
+			var=$(comm -3 /home/dnsblocker/cache/bblock /home/dnsblocker/bblock 2> /dev/null | wc -l)
                         cmp --silent /home/dnsblocker/cache/bblock /home/dnsblocker/bblock || echo "Zdroj 2 (malware blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/bblock 2> /dev/null
@@ -87,37 +112,37 @@ echo stahování aktualizací
                                cp  /home/dnsblocker/cache/bbad /home/dnsblocker/
                                mv bbad hosts
                                status="CHYBA"
-                               echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts/tree/master/alternates/porn" >> status.txt
-                               echo "Použita záloha 3 (upravte URL)" >> status.txt
+			       echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts/tree/master/alternates/porn" >> status.txt
+			       echo "Použita záloha 3 (upravte URL)" >> status.txt
                         fi
 
-                        mv hosts bbad
+		        mv hosts bbad
 
-                        var=$(comm -3 /home/dnsblocker/cache/bbad /home/dnsblocker/bbad 2> /dev/null | wc -l)
-                        cmp --silent /home/dnsblocker/cache/bbad /home/dnsblocker/bbad || echo "Zdroj 3 (porn blacklist) aktualizován. ($var změn)" >> status.txt
+			var=$(comm -3 /home/dnsblocker/cache/bbad /home/dnsblocker/bbad 2> /dev/null | wc -l)
+			cmp --silent /home/dnsblocker/cache/bbad /home/dnsblocker/bbad || echo "Zdroj 3 (porn blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/bbad 2> /dev/null
                 cp  /home/dnsblocker/bbad  /home/dnsblocker/cache/
 
 
 # ads zdroj 4
-        rm ad_servers.txt 2> /dev/null
-        wget https://hosts-file.net/ad_servers.txt -q --show-progress
+	rm ad_servers.txt 2> /dev/null
+	wget https://hosts-file.net/ad_servers.txt -q --show-progress
 
-                file="ad_servers.txt"
-                if [ -f "$file" ]
-                        then
-                                echo ""
-                        else
+		file="ad_servers.txt"
+		if [ -f "$file" ]
+			then
+				echo ""
+			else
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/
                                status="CHYBA"
-                               echo "Chyba zdroje AD (reverse) https://hosts-file.net/ad_servers.txt" >> status.txt
-                               echo "Použita záloha 4 (upravte URL)" >> status.txt
-                        fi
+			       echo "Chyba zdroje ADS (reverse) https://hosts-file.net/ad_servers.txt" >> status.txt
+			       echo "Použita záloha 4 (upravte URL)" >> status.txt
+			fi
 
-                                var=$(comm -3 /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt 2> /dev/null | wc -l)
-                                cmp --silent /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt || echo "Zdroj 4 (ads reverse blacklist) aktualizován. ($var změn)" >> status.txt
+				var=$(comm -3 /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt 2> /dev/null | wc -l)
+				cmp --silent /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt || echo "Zdroj 4 (ads reverse blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/ad_servers.txt 2> /dev/null
                 cp  /home/dnsblocker/ad_servers.txt  /home/dnsblocker/cache/
@@ -125,63 +150,63 @@ echo stahování aktualizací
 
 
 # porn hosts zdroj 5
-        rm hosts 2> /dev/null
-        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts -q --show-progress
+	rm hosts 2> /dev/null
+	wget https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts -q --show-progress
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
-                                echo "Problém při stažení $file Beru ze zálohy !!"
-                                cp  /home/dnsblocker/cache/hosts2 /home/dnsblocker/
-                                mv hosts2 hosts
+				echo "Problém při stažení $file Beru ze zálohy !!"
+				cp  /home/dnsblocker/cache/hosts2 /home/dnsblocker/
+				mv hosts2 hosts
                                 status="CHYBA"
-                                echo "Chyba zdroje EnergizedProtection porn https://github.com/EnergizedProtection/block" >> status.txt
-                                echo "Použita záloha 5 (upravte URL)" >> status.txt
+				echo "Chyba zdroje EnergizedProtection porn https://github.com/EnergizedProtection/block" >> status.txt
+			        echo "Použita záloha 5 (upravte URL)" >> status.txt
                         fi
 
-                        mv hosts hosts2
+			mv hosts hosts2
 
-                                var=$(comm -3 /home/dnsblocker/cache/hosts2 /home/dnsblocker/hosts2 2> /dev/null | wc -l)
-                                cmp --silent /home/dnsblocker/cache/hosts2 /home/dnsblocker/hosts2 || echo "Zdroj 5 (Energized porn blacklist) aktualizován. ($var změn)" >> status.txt
+				var=$(comm -3 /home/dnsblocker/cache/hosts2 /home/dnsblocker/hosts2 2> /dev/null | wc -l)
+				cmp --silent /home/dnsblocker/cache/hosts2 /home/dnsblocker/hosts2 || echo "Zdroj 5 (Energized porn blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/hosts2 2> /dev/null
                 cp  /home/dnsblocker/hosts2  /home/dnsblocker/cache/
 
 
 # a jeste jeden ciste porn zdroj 6
-        rm hosts 2> /dev/null
+	rm hosts 2> /dev/null
 
 
 
-        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts -q --show-progress
+	wget https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts -q --show-progress
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
-                                echo "Problém při stažení $file beru ze zálohy !!"
+				echo "Problém při stažení $file beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/
                                 mv ext-porn-hosts hosts
                                 status="CHYBA"
-                                echo "Chyba zdroje EnergizedProtection porn extension https://github.com/EnergizedProtection/block" >> status.txt
-                                echo "Použita záloha 6 (upravte URL)" >> status.txt
+				echo "Chyba zdroje EnergizedProtection porn extension https://github.com/EnergizedProtection/block" >> status.txt
+				echo "Použita záloha 6 (upravte URL)" >> status.txt
                         fi
 
-                        mv hosts ext-porn-hosts
+			mv hosts ext-porn-hosts
 
-                                var=$(comm -3 /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/ext-porn-hosts 2> /dev/null | wc -l)
-                                cmp --silent /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/ext-porn-hosts || echo "Zdroj 6 (Energized porn extra blacklist) aktualizován. ($var změn)" >> status.txt
+				var=$(comm -3 /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/ext-porn-hosts 2> /dev/null | wc -l)
+				cmp --silent /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/ext-porn-hosts || echo "Zdroj 6 (Energized porn extra blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/ext-porn-hosts 2> /dev/null
                 cp  /home/dnsblocker/ext-porn-hosts  /home/dnsblocker/cache/
 
 
 # malware zdroj 7
-        rm simple_malware.txt 2> /dev/null
-        wget https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt -q --show-progress
+	rm simple_malware.txt 2> /dev/null
+	wget https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt -q --show-progress
 
                 file="simple_malware.txt"
                 if [ -f "$file" ]
@@ -191,43 +216,43 @@ echo stahování aktualizací
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/
                                status="CHYBA"
-                               echo "Chyba zdroje simple malware https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt" >> status.txt
-                               echo "Použita záloha 7 (upravte URL)" >> status.txt
+			       echo "Chyba zdroje simple malware https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt" >> status.txt
+			       echo "Použita záloha 7 (upravte URL)" >> status.txt
                         fi
 
-                               var=$(comm -3 /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt 2> /dev/null | wc -l)
-                               cmp --silent /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt || echo "Zdroj 7 (malware blacklist) aktualizován. ($var změn)" >> status.txt
+			       var=$(comm -3 /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt 2> /dev/null | wc -l)
+			       cmp --silent /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt || echo "Zdroj 7 (malware blacklist) aktualizován. ($var změn)" >> status.txt
 
                 rm  /home/dnsblocker/cache/simple_malware.txt 2> /dev/null
                 cp  /home/dnsblocker/simple_malware.txt  /home/dnsblocker/cache/
 
 
 echo ===================
-echo konverze blacklistu
+echo konverze blacklistu 
 echo ===================
 
-echo whitelistovani chybneho blacklistu
+echo whitelistovaní chybného blacklistu
 
-        grep -Fvxf bblock bbad > fresh
+	grep -Fvxf bblock bbad > fresh
 
-echo příprava blacklistu
+echo příprava blacklistu 
 
-        sed -i 's/0.0.0.0//g' fresh
-        sed -i '/#/d' fresh
+	sed -i 's/0.0.0.0//g' fresh
+	sed -i '/#/d' fresh
 
 echo odstranění komentářů simple malware
 
-        sed -i '/#/d' simple_malware.txt
-        sed -i '/Malware list by Disconnect/d' simple_malware.txt
+	sed -i '/#/d' simple_malware.txt
+	sed -i '/Malware list by Disconnect/d' simple_malware.txt
         sed -i '/^$/d' simple_malware.txt
         sed -i -r 's/\s+//g' simple_malware.txt
-        echo " " >> simple_malware.txt
+	echo " " >> simple_malware.txt
 
 echo odstranění ochrany [̲̅p̲̅][̲̅o̲̅][̲̅r̲̅][̲̅n̲̅][̲̅a̲̅][̲̅w̲̅][̲̅a̲̅][̲̅y̲̅] 1/2
 
-        awk '!/]/' ext-porn-hosts > temp && mv temp bingo
-        rm ext-porn-hosts 2> /dev/null
-        mv bingo ext-porn-hosts
+	awk '!/]/' ext-porn-hosts > temp && mv temp bingo
+	rm ext-porn-hosts 2> /dev/null
+	mv bingo ext-porn-hosts
 
 echo odstranění komentů porn hosts2
         sed -i '/#/d' hosts2
@@ -322,34 +347,34 @@ echo úprava záznamů ext-porn
         sed -i 's/0.0.0.0//g' ext-porn-hosts
 
 
-echo Propojení blacklistů
+echo propojení blacklistů 
 
         sed -i -r 's/\s+//g' perBlacklist
         sed -i '/^$/d' perBlacklist
 
-        rm domainsC 2> /dev/null
-        cat ext-porn-hosts hosts simple_malware.txt fresh UT1 > domainsC
+	rm domainsC 2> /dev/null
+	cat ext-porn-hosts hosts simple_malware.txt fresh UT1 > domainsC
 
 
-echo odstraneni blogspot zaznamu
+echo odstranění blogspot záznamů
 
-        sed -i '/blogspot./d' domainsC
+	sed -i '/blogspot./d' domainsC
 
-echo odstraneni tumblr.com
+echo odstranění tumblr.com záznamů
 
-        sed -i '/tumblr.com/d' domainsC
+	sed -i '/tumblr.com/d' domainsC
 
 cat domainsC perBlacklist > domains
 
 echo odstranění nepoužitelných IP
 
-        grep -P -v '^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$' domains > domains.list
+	grep -P -v '^\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}$' domains > domains.list
 
 echo odstranění komentů ADS
 
         sed -i '/#/d' ad_servers.txt
-        sed -i '/127.0.0.1 localhost #IPv4 localhost/d' ad_servers.txt
-        sed -i '/::1 localhost #IPv6 localhost/d' ad_servers.txt
+	sed -i '/127.0.0.1 localhost #IPv4 localhost/d' ad_servers.txt
+	sed -i '/::1 localhost #IPv6 localhost/d' ad_servers.txt
 
 echo úprava záznamů ADS
 
@@ -357,7 +382,7 @@ echo úprava záznamů ADS
         sed -i '/^$/d' ad_servers.txt
         sed -i -r 's/\s+//g' ad_servers.txt
 
-echo příprava porovávacího souboru ADS
+echo příprava porovnávacího souboru ADS
 
         sed -i '/^$/d' ad_servers.txt
         sed -i -r 's/\s+//g' ad_servers.txt
@@ -366,16 +391,16 @@ echo příprava porovávacího souboru ADS
         sed -i 's/$/",/' ad_servers.txt
         sed -i '/^$/d' ad_servers.txt
 
-echo úprava záznamů pro primarni BL 1/2
+echo úprava záznamů pro primární BL 1/2
 
         sed -i 's/$/",/' domains.list
 
-echo úprava záznamů pro primarni BL 2/2
+echo úprava záznamů pro primární BL 2/2
 
         sed -i 's/^/"/' domains.list
 
 
-echo reversni aplikace ADS
+echo reversní aplikace ADS
 
        rm domains.list2 2> /dev/null
        grep -Fvxf ad_servers.txt domains.list > domains.list2
@@ -383,15 +408,15 @@ echo reversni aplikace ADS
 
 echo aktualizace black/white listu z github
 
-        cd github
-        git pull
-        cd ..
+	cd github
+	git pull
+	cd ..
 
-        var=$(grep -f /home/dnsblocker/github/blacklist /home/dnsblocker/github/whitelist | wc -l)
-        if [ $var -gt 0 ]; then
-        echo "Následující záznamy jsou nalezeny duplicitně, jak u whitelist tak u blacklist :" >> status.txt
-        dup=$(comm -13 <(sort /home/dnsblocker/github/whitelist) <(sort /home/dnsblocker/github/blacklist))
-        echo "$dup" >> status.txt
+	var=$(grep -f /home/dnsblocker/github/blacklist /home/dnsblocker/github/whitelist | wc -l)
+	if [ $var -gt 0 ]; then
+        echo "Následující záznamy jsou nalezeny duplicitně (jak u whitelist tak u blacklist) :" >> status.txt
+	dup=$(comm -13 <(sort /home/dnsblocker/github/whitelist) <(sort /home/dnsblocker/github/blacklist))
+	echo "$dup" >> status.txt
         fi
 
                 var=$(comm -3 /home/dnsblocker/cache/blacklist /home/dnsblocker/github/blacklist 2> /dev/null | wc -l)
@@ -409,62 +434,62 @@ echo aktualizace black/white listu z github
 
 echo generování výstupu blacklistu
 
-        rm blacklist 2> /dev/null
-        cp /home/dnsblocker/github/blacklist /home/dnsblocker/
+	rm blacklist 2> /dev/null
+	cp /home/dnsblocker/github/blacklist /home/dnsblocker/
 
-        sed -i '/^$/d' blacklist
+	sed -i '/^$/d' blacklist
         sed -i -r 's/\s+//g' blacklist
 
-        sed -i 's/^/"/' blacklist
-        sed -i 's/$/",/' blacklist
-        sed -i '/^$/d' blacklist
+	sed -i 's/^/"/' blacklist
+	sed -i 's/$/",/' blacklist
+	sed -i '/^$/d' blacklist
 
 echo připojení blacklistu z github
-
-        rm blacklisted 2> /dev/null
-        cat domains.list2 blacklist > blacklisted
-        dos2unix blacklisted -q
+	
+	rm blacklisted 2> /dev/null
+	cat domains.list2 blacklist > blacklisted
+	dos2unix blacklisted -q
 
 echo generování výstupu whitelistu z github
 
-        rm whitelist 2> /dev/null
+	rm whitelist 2> /dev/null
         cp /home/dnsblocker/github/whitelist /home/dnsblocker/
 
-        cat perWhitelist whitelist > whitelistB
-        rm whitelist 2> /dev/null
-        mv whitelistB whitelist
+	cat perWhitelist whitelist > whitelistB
+	rm whitelist 2> /dev/null
+	mv whitelistB whitelist
 
 
-        #subdomeny
-        rm whitelistD 2> /dev/null
+	#subdomeny
+	rm whitelistD 2> /dev/null
         sed 's/^/./' whitelist > whitelistD
 
-        sed -i '/^$/d' whitelist
-        sed -i -r 's/\s+//g' whitelist
+	sed -i '/^$/d' whitelist
+	sed -i -r 's/\s+//g' whitelist
 
-        sed -i 's/^/"/' whitelist
-        sed -i 's/$/",/' whitelist
-        sed -i '/^$/d' whitelist
+	sed -i 's/^/"/' whitelist
+	sed -i 's/$/",/' whitelist
+	sed -i '/^$/d' whitelist
 
 echo připojení whitelistu
 
-        dos2unix blacklisted -q
-        dos2unix whitelistD -q
-        dos2unix whitelist -q
+	dos2unix blacklisted -q
+	dos2unix whitelistD -q
+	dos2unix whitelist -q
 
-        rm blocklistA 2> /dev/null
+	rm blocklistA 2> /dev/null
 
-        grep -vFf whitelistD blacklisted > blacklistD
-        grep -Fvxf whitelist blacklistD > blocklist
+	grep -vFf whitelistD blacklisted > blacklistD
+	grep -Fvxf whitelist blacklistD > blocklist
 
-echo odstanění prázdných záznamů
+echo odstanění prázdných záznamů 
 
         sed -i '/^$/d' blocklist
-        sed -i -r 's/\s+//g' blocklist
+	sed -i -r 's/\s+//g' blocklist
 
 echo oprava nepoužitelných záznamů
 
-        sed -i 's|/"|"|g' blocklist
+	sed -i 's|/"|"|g' blocklist
 
 echo kontrola duplicitních záznamů
 
@@ -472,21 +497,21 @@ echo kontrola duplicitních záznamů
 
 echo seřazení podle abecedy
 
-        sort blocklist.lua -o blocklist.lua
+	sort blocklist.lua -o blocklist.lua
 
 echo kontrola domén
 
-        sed -i '/\./!d' blocklist.lua
+	sed -i '/\./!d' blocklist.lua
 
 echo přidání tagů
 
         sed -i '1i return{' blocklist.lua
-        echo "}" >> blocklist.lua
+	echo "}" >> blocklist.lua
 
 echo čištění a oprava kompatiblity
 
-        rm adult.tar.gz 2> /dev/null
-        rm UT1 2> /dev/null
+	rm adult.tar.gz 2> /dev/null
+	rm UT1 2> /dev/null
         rm ad_servers.txt 2> /dev/null
         rm blacklist 2> /dev/null
         rm blacklistD 2> /dev/null
@@ -494,76 +519,77 @@ echo čištění a oprava kompatiblity
         rm blocklist 2> /dev/null
         rm blocklistA 2> /dev/null
         rm domains.list 2> /dev/null
-        rm domains.list2 2> /dev/null
+	rm domains.list2 2> /dev/null
         rm ext-porn-hosts 2> /dev/null
         rm domains 2> /dev/null
-        rm domainsC 2> /dev/null
+	rm domainsC 2> /dev/null
         rm hosts 2> /dev/null
-        rm bbad 2> /dev/null
-        rm bblock 2> /dev/null
-        rm fresh 2> /dev/null
+	rm bbad 2> /dev/null
+	rm bblock 2> /dev/null
+	rm fresh 2> /dev/null
         rm simple_malware.txt 2> /dev/null
-        rm whitelist 2> /dev/null
-        rm whitelistD 2> /dev/null
-        dos2unix blocklist.lua -q
+	rm whitelist 2> /dev/null
+	rm whitelistD 2> /dev/null
+	dos2unix blocklist.lua -q
 
 echo příprava pro zveřejnění
+	 
+	rm /var/www/html/blocklist.lua 2> /dev/null
+	cp /home/dnsblocker/blocklist.lua /var/www/html
 
-        rm /var/www/html/blocklist.lua 2> /dev/null
-        cp /home/dnsblocker/blocklist.lua /var/www/html
+	rm /home/dnsblocker/cache/whitelist 2> /dev/null
+	cp /home/dnsblocker/github/whitelist /home/dnsblocker/cache     
 
-        rm /home/dnsblocker/cache/whitelist 2> /dev/null
-        cp /home/dnsblocker/github/whitelist /home/dnsblocker/cache
-
-        rm /home/dnsblocker/cache/blacklist 2> /dev/null
+	rm /home/dnsblocker/cache/blacklist 2> /dev/null
         cp /home/dnsblocker/github/blacklist /home/dnsblocker/cache
 
-        pocet=$(sed -n '$=' blocklist.lua)
-        size=$(wc -c < "blocklist.lua")
-        echo "Počet záznamů :" $pocet >> status.txt
-        echo "Velikost blacklistu :" $size"b" >> status.txt
+	pocet=$(sed -n '$=' blocklist.lua)
+	size=$(wc -c < "blocklist.lua")
+	echo "Počet záznamů :" $pocet >> status.txt
+	echo "Velikost blacklistu :" $size"b" >> status.txt
 
-                var=$(comm -3 /home/dnsblocker/cache/blocklist.lua /home/dnsblocker/blocklist.lua 2> /dev/null | wc -l)
-                echo "Celkem aplikovaných změn v databázi : $var" >> status.txt
+		var=$(comm -3 /home/dnsblocker/cache/blocklist.lua /home/dnsblocker/blocklist.lua 2> /dev/null | wc -l)
+		echo "Celkem aplikovaných změn v databázi : $var" >> status.txt
 
-                mv -f /home/dnsblocker/status.txt /home/dnsblocker/github
+		mv -f /home/dnsblocker/status.txt /home/dnsblocker/github
 
-                rm /home/dnsblocker/cache/blocklist.lua 2> /dev/null
-                cp /home/dnsblocker/blocklist.lua /home/dnsblocker/cache/blocklist.lua
+		rm /home/dnsblocker/cache/blocklist.lua 2> /dev/null
+		cp /home/dnsblocker/blocklist.lua /home/dnsblocker/cache/blocklist.lua
 
 echo zveřejnění změn na github
 
-        cd  github
+	cd  github
 
-        git add .
-        git commit -m "Auto Update : `date` '$status'" -m "počet záznamů : '$pocet' velikost : '$size'"
+	git add .
+	git commit -m "$TYPE Update : `date` '$status'" -m "počet záznamů : '$pocet' velikost : '$size'"
      #git commit --amend --no-edit --allow-empty
      #git push --force
-        git push
+	git push
 
         if [ $var -lt 1 ]; then
-                echo "Hotovo, aktualizace není nutná"
-                exit
+	        echo "Hotovo, aktualizace není nutná" 
+		rm /home/dnsblocker/blocklist.lua 2> /dev/null
+	        exit
         fi
 
-echo aplikace blocklistu na DNS server
+echo aplikace blacklistu na DNS1 server
 
-        cd ..
+	cd ..
 
-        rm /etc/powerdns/blocklist.lua 2> /dev/null
-        mv /home/dnsblocker/blocklist.lua /etc/powerdns
-#       /etc/init.d/pdns-recursor stop
+	rm /etc/powerdns/blocklist.lua 2> /dev/null
+	mv /home/dnsblocker/blocklist.lua /etc/powerdns
+#	/etc/init.d/pdns-recursor stop
         echo 3 > /proc/sys/vm/drop_caches
-#       /etc/init.d/pdns-recursor start
+#	/etc/init.d/pdns-recursor start
 
-        rec_control --timeout=90 reload-lua-script
+	rec_control --timeout=90 reload-lua-script
 
 
 cd /
 
 # dns2 sync
 
- sshpass -p updater4321 ssh -o StrictHostKeyChecking=no updater@192.168.1.3 "sudo updater2"
+	sshpass -p updater4321 ssh -o StrictHostKeyChecking=no updater@192.168.1.3 "sudo updater2"
 
 
 echo Hotovo
