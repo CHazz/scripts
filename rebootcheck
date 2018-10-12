@@ -1,0 +1,4 @@
+if [ -f /var/run/reboot-required ]
+then
+    sudo reboot
+fi
