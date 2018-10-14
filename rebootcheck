@@ -1,4 +1,8 @@
 if [ -f /var/run/reboot-required ]
 then
     sudo reboot
+
+else 
+    sudo sync; echo 3 > /proc/sys/vm/drop_caches     
+	
 fi
