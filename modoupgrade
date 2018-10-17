@@ -1,0 +1,30 @@
+ su - modoboa
+ source env/bin/activate
+ pip install modoboa==1.12.1
+
+
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py migrate
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py collectstatic
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py check --deploy
+
+exit
+ service uwsgi restart
+ service nginx restart
+
+--------------------------------------------
+
+su - modoboa
+ source env/bin/activate
+
+pip install modoboa-stats==1.4.1
+
+
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py migrate
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py collectstatic
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py load_initial_data
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py check --deploy
+
+
+exit
+ service uwsgi restart
+ service nginx restart
