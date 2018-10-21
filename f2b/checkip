@@ -41,5 +41,6 @@ val=$"${lines[0]}"
 	fi
 
 
-awk ' !x[$0]++' /etc/fail2ban/bad.ip > /tmp/tmpBB && mv /tmp/tmpBB /etc/fail2ban/bad.ip
+awk '!seen[substr($0,15)]++' /etc/fail2ban/bad.ip > /tmp/tmpBB && mv /tmp/tmpBB /etc/fail2ban/bad.ip
+
 
