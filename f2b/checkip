@@ -1,0 +1,45 @@
+#!/bin/bash
+
+API="YOURAPIKEY"
+
+rm /tmp/json 2> /dev/null
+rm /tmp/ipcheck 2> /dev/null
+
+IP=$(echo $1 | tr -d ' ')
+
+
+REC=`date "+%b %d %H:%M:%S"`" BAD "$IP
+
+
+JSON=$(curl -s https://www.abuseipdb.com/check/$IP/json?key=$API&days=0)
+echo $JSON > /tmp/json
+cat /tmp/json | python -mjson.tool > /tmp/ipcheck
+
+
+	rating=$( jq '.[].abuseConfidenceScore' /tmp/ipcheck)
+
+
+readarray -t lines < <(echo "$rating")
+val=$"${lines[0]}"
+
+
+	if [ -z "$val" ]
+
+	then
+
+		sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
+	else
+			if [ $val -ge 25 ]
+			then
+			echo $REC >> /etc/fail2ban/bad.ip
+
+			else
+			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
+
+			fi
+
+	fi
+
+
+awk ' !x[$0]++' /etc/fail2ban/bad.ip > /tmp/tmpBB && mv /tmp/tmpBB /etc/fail2ban/bad.ip
+
