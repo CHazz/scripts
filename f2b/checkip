@@ -28,6 +28,8 @@ val=$"${lines[0]}"
 	then
 
 		sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
+		echo $REC >> /etc/fail2ban/good.ip
+
 	else
 			if [ $val -ge 25 ]
 			then
@@ -35,6 +37,7 @@ val=$"${lines[0]}"
 
 			else
 			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
+			echo $REC >> /etc/fail2ban/good.ip
 
 			fi
 
