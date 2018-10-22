@@ -9,9 +9,9 @@ IP=$(echo $1 | tr -d ' ')
 
 
 REC=`date "+%b %d %H:%M:%S"`" BAD "$IP
+REC2=`date "+%b %d %H:%M:%S"`" GOOD "$IP
 
-
-JSON=$(curl -s https://www.abuseipdb.com/check/$IP/json?key=$API&days=0)
+JSON=$(curl -s https://www.abuseipdb.com/check/$IP/json?key=$API&days=1)
 echo $JSON > /tmp/json
 cat /tmp/json | python -mjson.tool > /tmp/ipcheck
 
@@ -28,18 +28,21 @@ val=$"${lines[0]}"
 	then
 
 		sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
-		echo $REC >> /etc/fail2ban/good.ip
+		sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
+		echo $REC2 >> /etc/fail2ban/good.ip
 
 	else
 			if [ $val -ge 25 ]
 			then
 
+			sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
 			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
 			echo $REC >> /etc/fail2ban/bad.ip
 
 			else
 			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
-			echo $REC >> /etc/fail2ban/good.ip
+			sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
+			echo $REC2 >> /etc/fail2ban/good.ip
 
 			fi
 
