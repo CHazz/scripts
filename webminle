@@ -1,0 +1,5 @@
+domain="mail.xxxxxxxx.eu"
+
+cd /etc/letsencrypt/live/$domain/
+cat privkey.pem cert.pem > /etc/webmin/miniserv.pem
+service webmin restart
