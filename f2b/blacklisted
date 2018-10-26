@@ -1,0 +1,9 @@
+#!/bin/bash
+
+abuse="YOURAPIKEY"
+
+sleep 901
+
+curl --fail --tlsv1.1 --data "key=$abuse" --data-urlencode "comment=Blacklisted" --data "ip=$1" --data "category=15" "https://www.abuseipdb.com/report/json"
+
+

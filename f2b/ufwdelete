@@ -1,0 +1,5 @@
+#!/bin/bash
+
+ufw delete deny from $1 to any
+
+echo $1 >> /etc/fail2ban/unbaned.ip
