@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #updater dns blacklistu FZŠ
 
 cd /home/dnsblocker

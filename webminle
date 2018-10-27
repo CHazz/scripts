@@ -1,3 +1,5 @@
+#!/bin/bash
+
 domain="mail.xxxxxxxx.eu"
 
 cd /etc/letsencrypt/live/$domain/
