@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo convmv -f iso-8859-2 -t utf8 --replace --notest -r /var/www/html/data/* > /dev/null 2>&1
+sudo convmv -f utf8 -t iso-8859-2 --fixdouble --replace --notest -r /var/www/html/data/* > /dev/null 2>&1
+

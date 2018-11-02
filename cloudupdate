@@ -2,14 +2,14 @@
 
 cd /tmp
 
-sudo wget https://download.nextcloud.com/server/daily/latest-stable13.zip
+wget https://download.nextcloud.com/server/daily/latest-stable13.zip
 sudo unzip latest-stable13.zip
 
 sudo rm /tmp/nextcloud/.htaccess
 sudo rm /tmp/nextcloud/.user.ini
 sudo rm /tmp/nextcloud/config/.htaccess
 
-sudo rsync -a /tmp/nextcloud/ /var/www/html
+sudo rsync -av --itemize-changes --info=progress2 /tmp/nextcloud/ /var/www/html
 
 sudo rm -rf /tmp/nextcloud/*
 sudo rm /tmp/latest-stable13.zip
