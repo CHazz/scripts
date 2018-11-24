@@ -1,7 +1,10 @@
 #!/bin/bash
 
-sudo cp /var/log/fail2ban/fail2ban.log "/var/log/fail2ban/$(date '+%Y%m%d%H%M').log"
-sudo :> /var/log/fail2ban/fail2ban.log
+sudo cp /var/log/fail2ban/predchozi.log "/var/log/fail2ban/$(date '+%Y%m%d%H%M').log" 2> /dev/null
+sudo rm /var/log/fail2ban/predchozi.log 2> /dev/null
+sudo cp /var/log/fail2ban/fail2ban.log /var/log/fail2ban/predchozi.log
+
+sudo truncate -s 0 /var/log/fail2ban/fail2ban.log
 echo Autorotace provedena `date` >> /var/log/fail2ban/fail2ban.log
 
 sudo find /var/log/fail2ban/ -mindepth 1 -type f -mtime +30 | xargs rm 2> /dev/null
