@@ -1,6 +1,6 @@
 #!/bin/bash
 
-API="YOURAPIKEY"
+API="Rhj7PLqvTh8AYgvcstCcKUuS0lKBD4l5D5VcMDsM"
 
 rm /tmp/json 2> /dev/null
 rm /tmp/ipcheck 2> /dev/null
@@ -8,8 +8,8 @@ rm /tmp/ipcheck 2> /dev/null
 IP=$(echo $1 | tr -d ' ')
 
 
-REC=`date "+%b %d %H:%M:%S"`" BAD "$IP
-REC2=`date "+%b %d %H:%M:%S"`" GOOD "$IP
+REC=`date "+%b %d %Y %H:%M:%S"`" BAD "$IP
+REC2=`date "+%b %d %Y %H:%M:%S"`" GOOD "$IP
 
 JSON=$(curl -s https://www.abuseipdb.com/check/$IP/json?key=$API&days=1)
 echo $JSON > /tmp/json
@@ -29,6 +29,7 @@ val=$"${lines[0]}"
 
 		sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
 		sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
+		printf \ >> /etc/fail2ban/good.ip
 		echo $REC2 >> /etc/fail2ban/good.ip
 
 	else
@@ -37,11 +38,13 @@ val=$"${lines[0]}"
 
 			sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
 			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
+			printf  \  >> /etc/fail2ban/bad.ip
 			echo $REC >> /etc/fail2ban/bad.ip
 
 			else
 			sed -i '/'"$IP"'/d' /etc/fail2ban/bad.ip
 			sed -i '/'"$IP"'/d' /etc/fail2ban/good.ip
+			printf  \ >> /etc/fail2ban/good.ip
 			echo $REC2 >> /etc/fail2ban/good.ip
 
 			fi
