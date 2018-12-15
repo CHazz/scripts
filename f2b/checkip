@@ -1,6 +1,6 @@
 #!/bin/bash
 
-API="Rhj7PLqvTh8AYgvcstCcKUuS0lKBD4l5D5VcMDsM"
+API="ddddddddddddddddddddddddddcMDsM"
 
 rm /tmp/json 2> /dev/null
 rm /tmp/ipcheck 2> /dev/null
