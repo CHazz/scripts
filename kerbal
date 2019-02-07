@@ -4,13 +4,22 @@ cd /home/kerbal/DMPServer
 
     if [ "$1" = "start" ]
         then
+
+        file="/tmp/ksp.lock"
+
+        if [ -f "$file" ]
+                        then
+			echo "KSP server již běží"
+			exit
+        else
+
             mono-service -l:/tmp/ksp.lock /home/kerbal/DMPServer/DMPServer.exe
 
-	echo "KSP server spuštěn"
+        echo "KSP server spuštěn"
 
-		exit
+                exit
+        fi
     fi
-
 
     if [ "$1" = "stop" ]
         then
@@ -45,11 +54,8 @@ cd /home/kerbal/DMPServer
 
 		        echo "KSP server restartován"
 			exit
-
 	else
-
 		mono-service -l:/tmp/ksp.lock /home/kerbal/DMPServer/DMPServer.exe
-
 		echo "KSP server spuštěn"
 
 	exit
@@ -60,10 +66,36 @@ cd /home/kerbal/DMPServer
     if [ "$1" = "" ]
         then
 
-        echo "použijte parametry : start/stop/restart"
+        echo "použijte parametry : start/stop/restart/status/update"
 	exit
 
     fi
+
+    if [ "$1" = "status" ]
+        then
+
+        file="/tmp/ksp.lock"
+
+        if [ -f "$file" ]
+                        then
+                        echo "KSP server běží"
+			exit
+        else
+        echo "KSP server není spuštěn"
+        exit
+
+        fi
+
+    fi
+
+    if [ "$1" = "update" ]
+        then
+
+            mono /home/kerbal/DMPServer/DMPUpdater.exe
+
+                exit
+    fi
+
 
 	echo "chybný parametr"
 
