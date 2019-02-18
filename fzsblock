@@ -64,18 +64,20 @@ echo stahování aktualizací
 
         rm adult.tar.gz 2> /dev/null
         rm -rf adult 2> /dev/null
-        wget http://dsi.ut-capitole.fr/blacklists/download/adult.tar.gz -q --show-progress --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget http://adsi.ut-capitole.fr/blacklists/download/adult.tar.gz -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="adult.tar.gz"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
-                                echo "Problém při stažení $file Beru ze zálohy !!"
+                                mtime=$(stat -c "%y" /home/dnsblocker/cache/adult.tar.gz)
+                                echo "Problém při stažení $file Beru ze zálohy !! "
                                 cp  /home/dnsblocker/cache/adult.tar.gz /home/dnsblocker/
                                 status="CHYBA"
                                 echo "Chyba zdroje UT1 https://dsi.ut-capitole.fr/blacklists/index_en.php" >> status.txt
-                                echo "Použita záloha 1 (upravte URL)" >> status.txt
+                                echo "Použita záloha 1" $mtime >> status.txt
+
                         fi
 
                 tar -xvzf adult.tar.gz > /dev/null
@@ -96,19 +98,20 @@ echo stahování aktualizací
 # black list na black list :) zdroj 2
 
         rm hosts 2> /dev/null
-        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                                mtime=$(stat -c "%y" /home/dnsblocker/cache/bblock)
                                 echo "Problém při stažení $file Beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/bblock /home/dnsblocker/
                                 mv bblock hosts
                                 status="CHYBA"
                                 echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts" >> status.txt
-                                echo "Použita záloha 2 (upravte URL)" >> status.txt
+                                echo "Použita záloha 2" $mtime >> status.txt
                         fi
 
                         mv hosts bblock
@@ -123,19 +126,20 @@ echo stahování aktualizací
 # porn a adds .. musi byt opraven zdroj 3
 
         rm hosts 2> /dev/null
-        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts -q -c --show-progress --content-on-error   --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                               mtime=$(stat -c "%y" /home/dnsblocker/cache/bbad)
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/bbad /home/dnsblocker/
                                mv bbad hosts
                                status="CHYBA"
                                echo "Chyba zdroje StevenBlack https://github.com/StevenBlack/hosts/tree/master/alternates/porn" >> status.txt
-                               echo "Použita záloha 3 (upravte URL)" >> status.txt
+                               echo "Použita záloha 3" $mtime >> status.txt
                         fi
 
                         mv hosts bbad
@@ -149,18 +153,19 @@ echo stahování aktualizací
 
 # ads zdroj 4
         rm ad_servers.txt 2> /dev/null
-        wget https://hosts-file.net/ad_servers.txt -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://hosts-file.net/ad_servers.txt -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="ad_servers.txt"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                               mtime=$(stat -c "%y" /home/dnsblocker/cache/ad_servers.txt)
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/
                                status="CHYBA"
                                echo "Chyba zdroje ADS (reverse) https://hosts-file.net/ad_servers.txt" >> status.txt
-                               echo "Použita záloha 4 (upravte URL)" >> status.txt
+                               echo "Použita záloha 4" $mtime >> status.txt
                         fi
 
                                 var=$(comm -3 /home/dnsblocker/cache/ad_servers.txt /home/dnsblocker/ad_servers.txt 2> /dev/null | wc -l)
@@ -173,19 +178,20 @@ echo stahování aktualizací
 
 # porn hosts zdroj 5
         rm hosts 2> /dev/null
-        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/porn/formats/hosts -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                                mtime=$(stat -c "%y" /home/dnsblocker/cache/hosts2)
                                 echo "Problém při stažení $file Beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/hosts2 /home/dnsblocker/
                                 mv hosts2 hosts
                                 status="CHYBA"
                                 echo "Chyba zdroje EnergizedProtection porn https://github.com/EnergizedProtection/block" >> status.txt
-                                echo "Použita záloha 5 (upravte URL)" >> status.txt
+                                echo "Použita záloha 5" $mtime >> status.txt
                         fi
 
                         mv hosts hosts2
@@ -202,19 +208,20 @@ echo stahování aktualizací
 
 
 
-        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://raw.githubusercontent.com/EnergizedProtection/block/master/extensions/porn-lite/formats/hosts -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="hosts"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                                mtime=$(stat -c "%y" /home/dnsblocker/cache/ext-porn-hosts)
                                 echo "Problém při stažení $file beru ze zálohy !!"
                                 cp  /home/dnsblocker/cache/ext-porn-hosts /home/dnsblocker/
                                 mv ext-porn-hosts hosts
                                 status="CHYBA"
                                 echo "Chyba zdroje EnergizedProtection porn extension https://github.com/EnergizedProtection/block" >> status.txt
-                                echo "Použita záloha 6 (upravte URL)" >> status.txt
+                                echo "Použita záloha 6" $mtime >> status.txt
                         fi
 
                         mv hosts ext-porn-hosts
@@ -228,18 +235,19 @@ echo stahování aktualizací
 
 # malware zdroj 7
         rm simple_malware.txt 2> /dev/null
-        wget https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt -q -c --show-progress --content-on-error   --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="simple_malware.txt"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                               mtime=$(stat -c "%y" /home/dnsblocker/cache/simple_malware.txt)
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/
                                status="CHYBA"
                                echo "Chyba zdroje simple malware https://s3.amazonaws.com/lists.disconnect.me/simple_malware.txt" >> status.txt
-                               echo "Použita záloha 7 (upravte URL)" >> status.txt
+                               echo "Použita záloha 7" $mtime >> status.txt
                         fi
 
                                var=$(comm -3 /home/dnsblocker/cache/simple_malware.txt /home/dnsblocker/simple_malware.txt 2> /dev/null | wc -l)
@@ -252,18 +260,19 @@ echo stahování aktualizací
 
 # megaporn list zdroj 8
         rm porn 2> /dev/null
-        wget https://tspprs.com/dl/porn -q --show-progress  --retry-connrefused --waitretry=1 --read-timeout=20 --timeout=15 -t 3
+        wget https://tspprs.com/dl/porn -q -c --show-progress --content-on-error --retry-connrefused --waitretry=5 --tries=100 --read-timeout=20 --timeout=150
 
                 file="porn"
                 if [ -f "$file" ]
                         then
                                 echo ""
                         else
+                               mtime=$(stat -c "%y" /home/dnsblocker/cache/porn)
                                echo "Problém při stažení $file Beru ze zálohy !!"
                                cp  /home/dnsblocker/cache/porn /home/dnsblocker/
                                status="CHYBA"
                                echo "Chyba zdroje simple malware https://tspprs.com/dl/porn" >> status.txt
-                               echo "Použita záloha 7 (upravte URL)" >> status.txt
+                               echo "Použita záloha 8" $mtime >> status.txt
                         fi
 
                                var=$(comm -3 /home/dnsblocker/cache/porn /home/dnsblocker/porn 2> /dev/null | wc -l)
