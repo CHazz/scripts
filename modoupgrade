@@ -9,6 +9,8 @@ nenní script jen návod :)
 /srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py collectstatic
 /srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py check --deploy
 
+/srv/modoboa/env/bin/python /srv/modoboa/instance/manage.py generate_postfix_maps --destdir /etc/postfix/ --force-overwrite
+
 exit
  service uwsgi restart
  service nginx restart
