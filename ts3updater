@@ -1,0 +1,27 @@
+#!/bin/bash
+
+cd /data
+
+rm /tmp/list 2> /dev/null
+rm /tmp/rootlist 2> /dev/null
+
+	lftp -e "cls -1 > /tmp/list; exit" "https://files.teamspeak-services.com/releases/server/"  2> /dev/null
+	lastver=`tail -n1 /tmp/list`
+
+	lftp -e "cls -1 > /tmp/rootlist; exit" "https://files.teamspeak-services.com/releases/server/"$lastver  2> /dev/null
+
+	 lastverfile=`sed '/linux_amd64/!d' /tmp/rootlist`
+
+
+	wget "https://files.teamspeak-services.com/releases/server/"$lastver"/"$lastverfile
+
+        tar -xvjf $lastverfile
+	rm $lastverfile
+
+	service ts3 stop
+
+	rsync -av --itemize-changes --info=progress2 /data/teamspeak3-server_linux_amd64/ /opt/teamspeak3-server
+
+	service ts3 start
+
+	rm -r -f /data/teamspeak3-server_linux_amd64/
